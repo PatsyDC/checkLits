@@ -1,0 +1,45 @@
+<div class="page">
+  <aside class="hero">
+    <div class="hero-content">
+      <span class="badge">Control de flota</span>
+      <h1>Seguridad antes de cada ruta</h1>
+      <p>
+        Registra la inspección previa de tus unidades de forma rápida,
+        ordenada y con trazabilidad.
+      </p>
+    </div>
+    <svg class="wave" viewBox="0 0 600 600" aria-hidden="true">
+      <circle cx="520" cy="560" r="300" fill="rgba(255,255,255,0.06)" />
+      <circle cx="520" cy="560" r="200" fill="rgba(255,255,255,0.07)" />
+      <circle cx="520" cy="560" r="110" fill="rgba(255,255,255,0.08)" />
+    </svg>
+  </aside>
+
+  <main class="panel">
+    <form class="box" (ngSubmit)="ingresar()">
+      <img class="logo" src="logo.png" alt="N&V SAC Empresa de Transportes" />
+      <h2>Bienvenido</h2>
+      <p class="sub">Ingresa con tu usuario para iniciar el check list.</p>
+
+      <label for="usuario">Usuario</label>
+      <input id="usuario" name="usuario" type="text" placeholder="Ej. jperez"
+             [(ngModel)]="usuario" autocomplete="username" />
+
+      <label for="clave">Contraseña</label>
+      <div class="pass">
+        <input id="clave" name="clave" [type]="verClave() ? 'text' : 'password'"
+               placeholder="••••••••" [(ngModel)]="clave" autocomplete="current-password" />
+        <button type="button" class="eye" (click)="verClave.set(!verClave())">
+          {{ verClave() ? 'Ocultar' : 'Ver' }}
+        </button>
+      </div>
+
+      @if (error()) {
+        <div class="error">{{ error() }}</div>
+      }
+
+      <button class="btn" type="submit">Ingresar</button>
+      <p class="foot">© 2026 N&V SAC · Empresa de Transportes</p>
+    </form>
+  </main>
+</div>

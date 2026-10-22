@@ -1,0 +1,85 @@
+<header class="top">
+  <img src="logo.png" alt="N&V SAC" />
+  <div class="user">
+    <span class="who">Inspector</span>
+    <button class="ghost" (click)="salir()">Cerrar sesión</button>
+  </div>
+</header>
+
+<main class="wrap">
+  @if (!enviado()) {
+    <div class="title">
+      <h1>Check list de salida</h1>
+      <p>Inspección previa a ruta · {{ fecha }}</p>
+    </div>
+
+    <section class="card">
+      <h2><span class="step">1</span> Selecciona la unidad</h2>
+      <select (change)="elegirUnidad($event)">
+        <option value="" [selected]="!unidadId()">— Elige una unidad —</option>
+        @for (u of unidades; track u.id) {
+          <option [value]="u.id">{{ u.placa }} · {{ u.detalle }}</option>
+        }
+      </select>
+    </section>
+
+    @if (unidad(); as u) {
+      <section class="card">
+        <div class="head">
+          <h2><span class="step">2</span> Inspección de la unidad
+            <span class="plate">{{ u.placa }}</span>
+          </h2>
+          <span class="count">{{ respondidas() }} / {{ preguntas.length }}</span>
+        </div>
+        <div class="bar"><div class="fill" [style.width.%]="progreso()"></div></div>
+
+        @for (p of preguntas; track p.id; let i = $index) {
+          <article class="q" [class.ok]="estado(p) === 'ok'" [class.bad]="estado(p) === 'bad'">
+            <div class="q-text">
+              <span class="n">{{ i + 1 }}</span>
+              <p>{{ p.texto }}</p>
+            </div>
+
+            <div class="opts">
+              <button type="button" class="si" [class.on]="resp()[p.id] === 'si'" (click)="responder(p.id, 'si')">Sí</button>
+              <button type="button" class="no" [class.on]="resp()[p.id] === 'no'" (click)="responder(p.id, 'no')">No</button>
+            </div>
+          </article>
+        }
+
+        <div class="foto-final">
+          <div class="foto-info">
+            <strong>Foto de la unidad</strong>
+            <span>Opcional</span>
+          </div>
+          <input #archivo type="file" accept="image/*" hidden (change)="subirFoto($event)" />
+          @if (foto(); as src) {
+            <div class="thumb"><img [src]="src" alt="Foto de la unidad" /></div>
+            <button type="button" class="quitar" (click)="quitarFoto()">Quitar foto</button>
+          } @else {
+            <button type="button" class="foto-btn" (click)="archivo.click()">📷 Agregar foto</button>
+          }
+        </div>
+
+        <div class="actions">
+          <p class="hint">
+            @if (!completo()) { Responde todas las preguntas para registrar. }
+          </p>
+          <button class="primary" [disabled]="!completo()" (click)="enviar()">
+            Registrar check list
+          </button>
+        </div>
+      </section>
+    }
+  } @else {
+    <section class="card done">
+      <div class="check">✓</div>
+      <h1>Check list registrado</h1>
+      <p>Unidad <strong>{{ unidad()?.placa }}</strong> · {{ unidad()?.detalle }}</p>
+      <div class="summary">
+        <div><strong>{{ conformes() }}</strong><span>Conformes</span></div>
+        <div class="warn"><strong>{{ observados() }}</strong><span>Observados</span></div>
+      </div>
+    </section>
+  }
+</main>
